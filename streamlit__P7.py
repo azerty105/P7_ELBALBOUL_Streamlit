@@ -66,7 +66,7 @@ else:
     st.write(f"<div style='display: flex; align-items: center; font-size: 15px;'>Endettement du client : <span style='font-size: 20px; font-weight: bold;'>{payment_rate}%</span></div>", unsafe_allow_html=True)
 
 # Appel de l'API :
-API_url = "https://elbalboul-flaskp7.herokuapp.com/api/predict"
+#API_url = "https://elbalboul-flaskp7.herokuapp.com/api/predict"
 
 class API_url:
     pass
