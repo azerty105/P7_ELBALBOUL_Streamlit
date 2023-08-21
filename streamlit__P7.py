@@ -20,10 +20,11 @@ st.title('Implémentez un modèle de scoring')
 
 # Lecture du fichier CSV
 
-#df = pd.read_csv("df_tabdashboard.csv", usecols=lambda col: col != 'TARGET', nrows=int(0.1 * pd.read_csv("df_tabdashboard.csv").shape[0]))  # Sélection de 10% des clients
-df = pd.read_csv("df_tabdashboard.csv")
+df = pd.read_csv("df_tabdashboard.csv", usecols=lambda col: col != 'TARGET', nrows=int(0.1 * pd.read_csv("df_tabdashboard.csv").shape[0]))  # Sélection de 10% des clients
+#df = pd.read_csv("df_tabdashboard.csv")
 df.head()
 liste_id = df['SK_ID_CURR'].tolist()
+
 
 
 with open('model_P7.pkl', 'rb') as file1:
@@ -46,8 +47,11 @@ if search_input != "" and search_input.isdigit():
     # Recherche du client dans le dataframe
     filtered_df = df[df['SK_ID_CURR'] == int(search_input)]
 
+
+     
+    
     # Sélection des colonnes souhaitées
-    selected_columns = ['SK_ID_CURR', 'Sexe', 'Revenus annuels', 'Revenus totaux', 'Somme des crédits', "Taux d’endettement", 'Propriétaire']
+    selected_columns = ['SK_ID_CURR','CODE_GENDER', 'AMT_ANNUITY', 'AMT_INCOME_TOTAL', 'AMT_CREDIT', 'INCOME_CREDIT_PERC', "FLAG_OWN_REALTY"]
     filtered_df = filtered_df[selected_columns]
 
 # Affichage du résultat
@@ -58,11 +62,15 @@ else:
     st.write(filtered_df)
 
     # Affichage du ratio du client en pourcentage avec une mise en forme personnalisée
-    payment_rate = filtered_df["Taux d’endettement"].values[0] * 100
+    payment_rate = filtered_df["INCOME_CREDIT_PERC"].values[0] * 100
     st.write(f"<div style='display: flex; align-items: center; font-size: 15px;'>Endettement du client : <span style='font-size: 20px; font-weight: bold;'>{payment_rate}%</span></div>", unsafe_allow_html=True)
 
 # Appel de l'API :
 # API_url = "https://elbalboul-flaskp7.herokuapp.com/api/predict"
+
+class API_url:
+    pass
+
 
 if search_input:
     client_id = int(search_input) if search_input.isdigit() else None
@@ -145,15 +153,15 @@ else:
 # Vérifier si filtered_df est vide avant de l'utiliser pour préparer les données pour le graphique
 if not filtered_df.empty:
     # Calculer le nombre de clients avec un crédit inférieur à celui du client recherché
-    client_credit = filtered_df['Somme des crédits'].values[0]
-    client_annuity = filtered_df["Taux d’endettement"].values[0]
-    lower_credit_clients_count = len(df[df['Somme des crédits'] < client_credit])
+    client_credit = filtered_df['AMT_CREDIT'].values[0]
+    client_annuity = filtered_df["INCOME_CREDIT_PERC"].values[0]
+    lower_credit_clients_count = len(df[df['AMT_CREDIT'] < client_credit])
     # Calculer le nombre de clients avec un crédit supérieur ou égal à celui du client recherché
-    higher_credit_clients_count = len(df[df['Somme des crédits'] >= client_credit])
+    higher_credit_clients_count = len(df[df['AMT_CREDIT'] >= client_credit])
     # Calculer le nombre de clients avec une annuité inférieure à celle du client recherché
-    lower_annuity_clients_count = len(df[df["Taux d’endettement"] < client_annuity])
+    lower_annuity_clients_count = len(df[df["INCOME_CREDIT_PERC"] < client_annuity])
     # Calculer le nombre de clients avec une annuité supérieure ou égale à celle du client recherché
-    higher_annuity_clients_count = len(df[df["Taux d’endettement"] >= client_annuity])
+    higher_annuity_clients_count = len(df[df["INCOME_CREDIT_PERC"] >= client_annuity])
 
     # Graphique 1: les crédits
 
@@ -171,6 +179,7 @@ if not filtered_df.empty:
 
     # Affichage du graphique à l'aide de Streamlit
     st.pyplot(fig_credit)
+        
     # Graphique 2: endettement
 
     # Création des données pour le diagramme circulaire (INCOME_CREDIT_PERC)
@@ -201,8 +210,7 @@ if not filtered_df.empty:
         # Sélection aléatoire de 2 clients parmi les voisins les plus proches
         random_clients = random.sample(nearest_neighbors_ids, k=min(5, len(nearest_neighbors_ids)))
         random_clients_info = df[df['SK_ID_CURR'].isin(random_clients)][
-            ['SK_ID_CURR', 'Sexe', 'Revenus annuels', 'Revenus totaux', 'Somme des crédits', "Taux d’endettement",
-             'Propriétaire']]
+            ['SK_ID_CURR','CODE_GENDER', 'AMT_ANNUITY', 'AMT_INCOME_TOTAL', 'AMT_CREDIT', 'INCOME_CREDIT_PERC', "FLAG_OWN_REALTY"]]
 
         # Affichage des informations des clients sélectionnés de manière aléatoire
         st.write("Clients les plus proches :")
