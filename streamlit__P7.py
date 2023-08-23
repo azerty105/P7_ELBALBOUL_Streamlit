@@ -68,10 +68,6 @@ else:
 # Appel de l'API :
 API_url = "https://elbalboul-flaskp7.herokuapp.com/api/predict"
 
-#class API_url:
-#    pass
-
-
 if search_input:
     client_id = int(search_input) if search_input.isdigit() else None
 
