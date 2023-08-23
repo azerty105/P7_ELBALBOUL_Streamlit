@@ -68,8 +68,8 @@ else:
 # Appel de l'API :
 API_url = "https://elbalboul-flaskp7.herokuapp.com/api/predict"
 
-class API_url:
-    pass
+#class API_url:
+#    pass
 
 
 if search_input:
